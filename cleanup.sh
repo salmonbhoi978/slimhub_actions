@@ -43,9 +43,6 @@ export AptPurgeList=" " DirPurgeList=" "
 # Make supported retainer list
 cat >/tmp/retainer.list <<EOR
 - homebrew
-- docker_imgcache
-- docker_buildkit
-  + docker_imgcache
 - container_tools
 - android_sdk
 - java_tools
@@ -120,20 +117,6 @@ if [[ ${retain_homebrew} != "true" ]]; then
   sudo rm -rf -- ./uninstall-brew.sh 2>/dev/null
   export DirPurgeList+=" /home/linuxbrew"
   echo "::endgroup::"
-fi
-
-if [[ ${retain_docker_buildkit} != "true" ]]; then
-  export retain_docker_imgcache="false"
-fi
-if [[ ${retain_docker_imgcache} != "true" ]]; then
-  echo "::group:: {[-]}  Clearing Docker Image Caches"
-  echo -e "The Following Docker Images Is Being Purged..."
-  docker rmi -f $(docker images -q) 2>/dev/null
-  echo "::endgroup::"
-fi
-if [[ ${retain_docker_buildkit} != "true" ]]; then
-  export AptPurgeList+=" moby-buildx moby-cli moby-compose moby-containerd moby-engine moby-runc"
-  export DirPurgeList+=" /usr/bin/docker-credential-ecr-login /usr/local/bin/docker-compose /usr/bin/docker*"
 fi
 
 if [[ ${retain_container_tools} != "true" ]]; then
